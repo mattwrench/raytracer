@@ -108,8 +108,7 @@ namespace RayTracer
 
         public Vector3 Normalize()
         {
-            double length = Length();
-            return new Vector3(X / length, Y / length, Z / length);
+            return this / Length();
         }
 
         public override string ToString()
@@ -124,5 +123,42 @@ namespace RayTracer
             int ib = (int)(255.999 * Z);
             return String.Concat(ir, ' ', ig, ' ', ib);
         }
+
+        // Operator overloads
+        public static Vector3 operator +(Vector3 a, Vector3 b)
+        {
+            return new Vector3(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
+        }
+
+        public static Vector3 operator -(Vector3 a, Vector3 b)
+        {
+            return new Vector3(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
+        }
+
+        public static Vector3 operator *(Vector3 a, Vector3 b)
+        {
+            return new Vector3(a.X * b.X, a.Y * b.Y, a.Z * b.Z);
+        }
+
+        public static Vector3 operator *(Vector3 a, double b)
+        {
+            return new Vector3(a.X * b, a.Y * b, a.Z * b);
+        }
+
+        public static Vector3 operator *(double a, Vector3 b)
+        {
+            return b * a;
+        }
+
+        public static Vector3 operator /(Vector3 a, Vector3 b)
+        {
+            return new Vector3(a.X / b.X, a.Y / b.Y, a.Z / b.Z);
+        }
+
+        public static Vector3 operator /(Vector3 a, double b)
+        {
+            return a * (1 / b);
+        }
+
     }
 }
