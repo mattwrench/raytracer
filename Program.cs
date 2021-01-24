@@ -7,27 +7,56 @@ namespace RayTracer
     class Program
     {
         const string Filename = "image.ppm";
-        const int ImageWidth = 256;
-        const int ImageHeight = 256;
 
-        static void Main(string[] args)
+        private static Vector3 rayColor(Ray r)
         {
+            // Render a blue-to-white gradient background
+            Vector3 unitDirection = r.Direction.Normalize();
+            double t = 0.5 * (unitDirection.Y + 1);
+            Vector3 white = new Vector3(1.0, 1.0, 1.0).Multiply(1.0 - t);
+            Vector3 blue = new Vector3(0.5, 0.7, 1.0).Multiply(t);
+            return white.Add(blue);
+        }
+
+        public static void Main(string[] args)
+        {
+            // Image
+            const double aspectRatio = 16.0 / 9.0;
+            const int imageWidth = 400;
+            const int imageHeight = (int)(imageWidth / aspectRatio);
+
+            // Camera
+            double viewportHeight = 2.0;
+            double viewportWidth = aspectRatio * viewportHeight;
+            double focalLength = 1.0;
+
+            Vector3 origin = new Vector3(0, 0, 0);
+            Vector3 horizontal = new Vector3(viewportWidth, 0, 0);
+            Vector3 vertical = new Vector3(0, viewportHeight, 0);
+            Vector3 lowerLeftCorner = origin.Subtract(horizontal.Multiply(0.5))
+                                            .Subtract(vertical.Multiply(0.5))
+                                            .Subtract(new Vector3(0, 0, focalLength));
+
             // Output .ppm header
             StreamWriter writer = new StreamWriter(Filename, false, System.Text.Encoding.ASCII);
             writer.WriteLine("P3"); // ASCII encoding
-            writer.WriteLine("{0} {1}", ImageWidth, ImageHeight); // Image resolution
+            writer.WriteLine("{0} {1}", imageWidth, imageHeight); // Image resolution
             writer.WriteLine("255"); // Max value of color components
 
-            for (int j = ImageHeight - 1; j >= 0; --j)
+            for (int j = imageHeight - 1; j >= 0; --j)
             {
                 // Progress indicator
                 Console.Write("\rScanlines remaining: {0}  ", j); // Extra spaces at end help clear console line
-                for (int i = 0; i < ImageWidth; ++i)
+                for (int i = 0; i < imageWidth; ++i)
                 {
-                    Vector3 pixelColor = new Vector3(
-                        ((double)i) / (ImageWidth - 1),
-                        ((double)j) / (ImageHeight - 1),
-                        0.25);
+                    double u = ((double)i) / (imageWidth - 1);
+                    double v = ((double)j) / (imageHeight - 1);
+                    Vector3 dir = new Vector3(lowerLeftCorner)
+                        .Add(horizontal.Multiply(u))
+                        .Add(vertical.Multiply(v))
+                        .Subtract(origin);
+                    Ray r = new Ray(origin, dir);
+                    Vector3 pixelColor = rayColor(r);
                     writer.WriteLine(pixelColor.WriteColor());
                 }
             }

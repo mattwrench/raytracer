@@ -20,6 +20,11 @@ namespace RayTracer
             Components = new double[] { e0, e1, e2 };
         }
 
+        public Vector3(Vector3 v)
+        {
+            Components = new double[] { v.X, v.Y, v.Z };
+        }
+
         public double X
         {
             get
@@ -99,6 +104,12 @@ namespace RayTracer
             return new Vector3(Y * v.Z - Z * v.Y,
                                Z * v.X - X * v.Z,
                                X * v.Y - Y * v.X);
+        }
+
+        public Vector3 Normalize()
+        {
+            double length = Length();
+            return new Vector3(X / length, Y / length, Z / length);
         }
 
         public override string ToString()
