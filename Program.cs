@@ -13,9 +13,9 @@ namespace RayTracer
             // Render a blue-to-white gradient background
             Vector3 unitDirection = r.Direction.Normalize();
             double t = 0.5 * (unitDirection.Y + 1);
-            Vector3 white = new Vector3(1.0, 1.0, 1.0).Multiply(1.0 - t);
-            Vector3 blue = new Vector3(0.5, 0.7, 1.0).Multiply(t);
-            return white.Add(blue);
+            Vector3 white = (1.0 - t) * new Vector3(1.0, 1.0, 1.0);
+            Vector3 blue = t * new Vector3(0.5, 0.7, 1.0);
+            return white + blue;
         }
 
         public static void Main(string[] args)
@@ -33,9 +33,7 @@ namespace RayTracer
             Vector3 origin = new Vector3(0, 0, 0);
             Vector3 horizontal = new Vector3(viewportWidth, 0, 0);
             Vector3 vertical = new Vector3(0, viewportHeight, 0);
-            Vector3 lowerLeftCorner = origin.Subtract(horizontal.Multiply(0.5))
-                                            .Subtract(vertical.Multiply(0.5))
-                                            .Subtract(new Vector3(0, 0, focalLength));
+            Vector3 lowerLeftCorner = origin - horizontal / 2 - vertical / 2 - new Vector3(0, 0, focalLength);
 
             // Output .ppm header
             StreamWriter writer = new StreamWriter(Filename, false, System.Text.Encoding.ASCII);
@@ -51,10 +49,7 @@ namespace RayTracer
                 {
                     double u = ((double)i) / (imageWidth - 1);
                     double v = ((double)j) / (imageHeight - 1);
-                    Vector3 dir = new Vector3(lowerLeftCorner)
-                        .Add(horizontal.Multiply(u))
-                        .Add(vertical.Multiply(v))
-                        .Subtract(origin);
+                    Vector3 dir = lowerLeftCorner + u * horizontal + v * vertical - origin;
                     Ray r = new Ray(origin, dir);
                     Vector3 pixelColor = rayColor(r);
                     writer.WriteLine(pixelColor.WriteColor());
