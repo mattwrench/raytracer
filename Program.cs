@@ -10,12 +10,28 @@ namespace RayTracer
 
         private static Vector3 rayColor(Ray r)
         {
+            // Render red sphere
+            if (hitSphere(new Vector3(0, 0, -1), 0.5, r))
+                return new Vector3(1, 0, 0); // Red color
+
             // Render a blue-to-white gradient background
             Vector3 unitDirection = r.Direction.Normalize();
             double t = 0.5 * (unitDirection.Y + 1);
             Vector3 white = (1.0 - t) * new Vector3(1.0, 1.0, 1.0);
             Vector3 blue = t * new Vector3(0.5, 0.7, 1.0);
             return white + blue;
+        }
+
+        private static bool hitSphere(Vector3 center, double radius, Ray r)
+        {
+            // Calculates discriminant from quadraditic equation between intersection of ray and spheres
+            // Discriminant > 0 == 2 intersections
+            Vector3 oc = r.Origin - center;
+            double a = r.Direction.Dot(r.Direction);
+            double b = 2.0 * oc.Dot(r.Direction);
+            double c = oc.Dot(oc) - radius * radius;
+            double discriminant = b * b - 4 * a * c;
+            return discriminant > 0;
         }
 
         public static void Main(string[] args)
