@@ -64,6 +64,16 @@ namespace RayTracer
             return Add(-x, -y, -z);
         }
 
+        public Vector3 Multiply(Vector3 v)
+        {
+            return Multiply(v.X, v.Y, v.Z);
+        }
+
+        public Vector3 Multiply (double x, double y, double z)
+        {
+            return new Vector3(X * x, Y * y, Z * z);
+        }
+        
         public Vector3 Multiply(double t)
         {
             return new Vector3(X * t, Y * t, Z * t);
@@ -77,6 +87,31 @@ namespace RayTracer
         public double LengthSquared()
         {
             return X * X + Y * Y + Z * Z;
+        }
+
+        public double Dot(Vector3 v)
+        {
+            return X * v.X + Y * v.Y + Z * v.Z;
+        }
+
+        public Vector3 Cross(Vector3 v)
+        {
+            return new Vector3(Y * v.Z - Z * v.Y,
+                               Z * v.X - X * v.Z,
+                               X * v.Y - Y * v.X);
+        }
+
+        public override string ToString()
+        {
+            return String.Concat(X, ' ', Y, ' ', Z);
+        }
+
+        public string WriteColor()
+        {
+            int ir = (int)(255.999 * X);
+            int ig = (int)(255.999 * Y);
+            int ib = (int)(255.999 * Z);
+            return String.Concat(ir, ' ', ig, ' ', ib);
         }
     }
 }

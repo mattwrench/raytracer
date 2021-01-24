@@ -24,15 +24,11 @@ namespace RayTracer
                 Console.Write("\rScanlines remaining: {0}  ", j); // Extra spaces at end help clear console line
                 for (int i = 0; i < ImageWidth; ++i)
                 {
-                    double r = ((double)i) / (ImageWidth - 1);
-                    double g = ((double)j) / (ImageHeight - 1);
-                    double b = 0.25;
-
-                    int ir = (int)(255.999 * r);
-                    int ig = (int)(255.999 * g);
-                    int ib = (int)(255.999 * b);
-
-                    writer.WriteLine("{0} {1} {2}", ir, ig, ib);
+                    Vector3 pixelColor = new Vector3(
+                        ((double)i) / (ImageWidth - 1),
+                        ((double)j) / (ImageHeight - 1),
+                        0.25);
+                    writer.WriteLine(pixelColor.WriteColor());
                 }
             }
 
