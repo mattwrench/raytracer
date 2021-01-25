@@ -122,11 +122,11 @@ namespace RayTracer
             double g = pixelColor.Y;
             double b = pixelColor.Z;
 
-            // Divide the color by the number of samples
+            // Divide the color by the number of samples and gamma-correct for gamma = 2.0
             double scale = 1.0 / samplesPerPixel;
-            r *= scale;
-            g *= scale;
-            b *= scale;
+            r = Math.Sqrt(scale * r);
+            g = Math.Sqrt(scale * g);
+            b = Math.Sqrt(scale * b);
 
             // Translate values to be between [0, 255]
             r = 256 * Utilities.Clamp(r, 0.0, 0.999);
