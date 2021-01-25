@@ -116,12 +116,24 @@ namespace RayTracer
             return String.Concat(X, ' ', Y, ' ', Z);
         }
 
-        public string WriteColor()
+        public string WriteColor(Vector3 pixelColor, int samplesPerPixel)
         {
-            int ir = (int)(255.999 * X);
-            int ig = (int)(255.999 * Y);
-            int ib = (int)(255.999 * Z);
-            return String.Concat(ir, ' ', ig, ' ', ib);
+            double r = pixelColor.X;
+            double g = pixelColor.Y;
+            double b = pixelColor.Z;
+
+            // Divide the color by the number of samples
+            double scale = 1.0 / samplesPerPixel;
+            r *= scale;
+            g *= scale;
+            b *= scale;
+
+            // Translate values to be between [0, 255]
+            r = 256 * Utilities.Clamp(r, 0.0, 0.999);
+            g = 256 * Utilities.Clamp(g, 0.0, 0.999);
+            b = 256 * Utilities.Clamp(b, 0.0, 0.999);
+
+            return String.Concat(r, ' ', g, ' ', b);
         }
 
         // Operator overloads
