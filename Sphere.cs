@@ -45,6 +45,9 @@ namespace RayTracer
             record.T = root;
             record.Point = r.At(record.T);
             record.Normal = (record.Point - Center) / Radius;
+            Vector3 outwardNormal = (record.Point - Center) / Radius;
+            record.SetFaceNormal(r, outwardNormal);
+
             return true;
         }
     }

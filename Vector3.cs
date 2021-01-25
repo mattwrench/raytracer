@@ -135,6 +135,12 @@ namespace RayTracer
             return new Vector3(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
         }
 
+        // Unary inversion
+        public static Vector3 operator -(Vector3 a)
+        {
+            return new Vector3(-a.X, -a.Y, -a.Z);
+        }
+
         public static Vector3 operator *(Vector3 a, Vector3 b)
         {
             return new Vector3(a.X * b.X, a.Y * b.Y, a.Z * b.Z);
