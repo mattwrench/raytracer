@@ -31,7 +31,7 @@ namespace RayTracer
                 {
                     hitAnything = true;
                     closestSoFar = tempRecord.T;
-                    record = tempRecord;
+                    record.Set(tempRecord);
                 }
             }
 

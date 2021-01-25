@@ -8,19 +8,17 @@ namespace RayTracer
     {
         const string Filename = "image.ppm";
 
-        private static Vector3 rayColor(Ray r)
+        private static Vector3 rayColor(Ray r, Hittable world)
         {
-            double t = hitSphere(new Vector3(0, 0, -1), 0.5, r);
-            // Shade sphere based on normals
-            if (t > 0.0)
+            HitRecord record = new HitRecord();
+            if (world.Hit(r, 0, Double.MaxValue, record))
             {
-                Vector3 normal = (r.At(t) - new Vector3(0, 0, -1)).Normalize();
-                return 0.5 * new Vector3(normal.X + 1, normal.Y + 1, normal.Z + 1);
+                return 0.5 * (record.Normal + new Vector3(1, 1, 1));
             }
 
-            // Render a blue-to-white gradient background
+            // Render a blue-to-white gradient background if no hit
             Vector3 unitDirection = r.Direction.Normalize();
-            t = 0.5 * (unitDirection.Y + 1);
+            double t = 0.5 * (unitDirection.Y + 1);
             Vector3 white = (1.0 - t) * new Vector3(1.0, 1.0, 1.0);
             Vector3 blue = t * new Vector3(0.5, 0.7, 1.0);
             return white + blue;
@@ -48,6 +46,11 @@ namespace RayTracer
             const int imageWidth = 400;
             const int imageHeight = (int)(imageWidth / aspectRatio);
 
+            // World
+            HittableList world = new HittableList();
+            world.Add(new Sphere(new Vector3(0, 0, -1), 0.5));
+            world.Add(new Sphere(new Vector3(0, -100.5, -1), 100));
+
             // Camera
             double viewportHeight = 2.0;
             double viewportWidth = aspectRatio * viewportHeight;
@@ -74,7 +77,7 @@ namespace RayTracer
                     double v = ((double)j) / (imageHeight - 1);
                     Vector3 dir = lowerLeftCorner + u * horizontal + v * vertical - origin;
                     Ray r = new Ray(origin, dir);
-                    Vector3 pixelColor = rayColor(r);
+                    Vector3 pixelColor = rayColor(r, world);
                     writer.WriteLine(pixelColor.WriteColor());
                 }
             }

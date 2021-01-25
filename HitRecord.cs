@@ -16,5 +16,14 @@ namespace RayTracer
             FrontFace = r.Direction.Dot(outwardNormal) < 0;
             Normal = FrontFace ? outwardNormal : -outwardNormal;
         }
+
+        // Set this HitRecord equal to another given record
+        public void Set(HitRecord r)
+        {
+            Point = r.Point;
+            Normal = r.Normal;
+            T = r.T;
+            FrontFace = r.FrontFace;
+        }
     }
 }
