@@ -108,7 +108,9 @@ namespace RayTracer
 
         public Vector3 Normalize()
         {
-            return this / Length();
+            if (LengthSquared() > 0) // Prevents division by 0
+                return this / Length();
+            return this;
         }
 
         public override string ToString()
@@ -158,6 +160,11 @@ namespace RayTracer
                     continue;
                 return p;
             }
+        }
+
+        public static Vector3 RandomUnitVector(Random rand)
+        {
+            return RandomInUnitSphere(rand).Normalize();
         }
 
         // Operator overloads

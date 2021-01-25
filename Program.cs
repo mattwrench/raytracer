@@ -19,9 +19,10 @@ namespace RayTracer
             if (depth <= 0)
                 return new Vector3(0, 0, 0);
 
-            if (world.Hit(r, 0, Double.MaxValue, record))
+            // 0.001 minimum prevents shadow acne
+            if (world.Hit(r, 0.001, Double.MaxValue, record))
             {
-                Vector3 target = record.Point + record.Normal + Vector3.RandomInUnitSphere(rand);
+                Vector3 target = record.Point + record.Normal + Vector3.RandomUnitVector(rand);
                 return 0.5 * rayColor(new Ray(record.Point, target - record.Point), world, depth - 1);
             }
 
