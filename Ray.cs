@@ -21,7 +21,7 @@ namespace RayTracer
             Direction = direction;
         }
 
-        Vector3 At(double t)
+        public Vector3 At(double t)
         {
             return Origin.Add(Direction.Multiply(t));
         }

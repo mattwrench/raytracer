@@ -10,28 +10,35 @@ namespace RayTracer
 
         private static Vector3 rayColor(Ray r)
         {
-            // Render red sphere
-            if (hitSphere(new Vector3(0, 0, -1), 0.5, r))
-                return new Vector3(1, 0, 0); // Red color
+            double t = hitSphere(new Vector3(0, 0, -1), 0.5, r);
+            // Shade sphere based on normals
+            if (t > 0.0)
+            {
+                Vector3 normal = (r.At(t) - new Vector3(0, 0, -1)).Normalize();
+                return 0.5 * new Vector3(normal.X + 1, normal.Y + 1, normal.Z + 1);
+            }
 
             // Render a blue-to-white gradient background
             Vector3 unitDirection = r.Direction.Normalize();
-            double t = 0.5 * (unitDirection.Y + 1);
+            t = 0.5 * (unitDirection.Y + 1);
             Vector3 white = (1.0 - t) * new Vector3(1.0, 1.0, 1.0);
             Vector3 blue = t * new Vector3(0.5, 0.7, 1.0);
             return white + blue;
         }
 
-        private static bool hitSphere(Vector3 center, double radius, Ray r)
+        private static double hitSphere(Vector3 center, double radius, Ray r)
         {
             // Calculates discriminant from quadraditic equation between intersection of ray and spheres
             // Discriminant > 0 == 2 intersections
             Vector3 oc = r.Origin - center;
-            double a = r.Direction.Dot(r.Direction);
-            double b = 2.0 * oc.Dot(r.Direction);
-            double c = oc.Dot(oc) - radius * radius;
-            double discriminant = b * b - 4 * a * c;
-            return discriminant > 0;
+            double a = r.Direction.LengthSquared();
+            double half_b = oc.Dot(r.Direction);
+            double c = oc.LengthSquared() - radius * radius;
+            double discriminant = half_b * half_b - a * c;
+            if (discriminant < 0)
+                return -1.0;
+            else
+                return (-half_b - Math.Sqrt(discriminant)) / a;
         }
 
         public static void Main(string[] args)
