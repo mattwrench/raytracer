@@ -8,12 +8,21 @@ namespace RayTracer
     {
         const string Filename = "image.ppm";
 
-        private static Vector3 rayColor(Ray r, Hittable world)
+        private static Random rand = new Random();
+
+        private static Vector3 rayColor(Ray r, Hittable world, int depth)
         {
             HitRecord record = new HitRecord();
+
+            // Stop gathering light if the ray bounce limit is exceeded
+            // Prevents stack overflow due to recursive function in the next section
+            if (depth <= 0)
+                return new Vector3(0, 0, 0);
+
             if (world.Hit(r, 0, Double.MaxValue, record))
             {
-                return 0.5 * (record.Normal + new Vector3(1, 1, 1));
+                Vector3 target = record.Point + record.Normal + Vector3.RandomInUnitSphere(rand);
+                return 0.5 * rayColor(new Ray(record.Point, target - record.Point), world, depth - 1);
             }
 
             // Render a blue-to-white gradient background if no hit
@@ -46,6 +55,7 @@ namespace RayTracer
             const int imageWidth = 400;
             const int imageHeight = (int)(imageWidth / aspectRatio);
             const int samplesPerPixel = 100;
+            const int maxDepth = 50;
 
             // World
             HittableList world = new HittableList();
@@ -61,7 +71,6 @@ namespace RayTracer
             writer.WriteLine("{0} {1}", imageWidth, imageHeight); // Image resolution
             writer.WriteLine("255"); // Max value of color components
 
-            Random rand = new Random();
             for (int j = imageHeight - 1; j >= 0; --j)
             {
                 // Progress indicator
@@ -71,10 +80,11 @@ namespace RayTracer
                     Vector3 pixelColor = new Vector3(0, 0, 0);
                     for (int s = 0; s < samplesPerPixel; ++s)
                     {
+                        // Generate randomized rays from camera viewport
                         double u = (i + rand.NextDouble()) / (imageWidth - 1);
                         double v = (j + rand.NextDouble()) / (imageHeight - 1);
                         Ray r = cam.GetRay(u, v);
-                        pixelColor = pixelColor + rayColor(r, world);
+                        pixelColor = pixelColor + rayColor(r, world, maxDepth);
                     }
                     writer.WriteLine(pixelColor.WriteColor(pixelColor, samplesPerPixel));
                 }

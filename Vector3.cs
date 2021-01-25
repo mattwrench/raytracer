@@ -136,6 +136,30 @@ namespace RayTracer
             return String.Concat(r, ' ', g, ' ', b);
         }
 
+        // Static functions
+        public static Vector3 RandomVector(Random rand)
+        {
+            return new Vector3(rand.NextDouble(), rand.NextDouble(), rand.NextDouble());
+        }
+
+        public static Vector3 RandomVector(Random rand, double min, double max)
+        {
+            return new Vector3(min + (max - min) * rand.NextDouble(),
+                               min + (max - min) * rand.NextDouble(),
+                               min + (max - min) * rand.NextDouble());
+        }
+
+        public static Vector3 RandomInUnitSphere(Random rand)
+        {
+            while (true)
+            {
+                Vector3 p = RandomVector(rand, -1, 1);
+                if (p.LengthSquared() >= 1)
+                    continue;
+                return p;
+            }
+        }
+
         // Operator overloads
         public static Vector3 operator +(Vector3 a, Vector3 b)
         {
