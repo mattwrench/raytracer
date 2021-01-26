@@ -10,24 +10,26 @@ namespace RayTracer
         private Vector3 lowerLeftCorner;
         private Vector3 horizontal, vertical;
 
-        public Camera(double vFOV, double aspectRatio)
+        public Camera(Vector3 lookFrom, Vector3 lookAt, Vector3 vUp, double vFOV, double aspectRatio)
         {
             double theta = Utilities.DegreesToRadians(vFOV);
             double h = Math.Tan(theta / 2);
             double viewportHeight = 2.0 * h;
             double viewportWidth = aspectRatio * viewportHeight;
 
-            double focalLength = 1.0;
+            Vector3 w = (lookFrom - lookAt).Normalize();
+            Vector3 u = vUp.Cross(w).Normalize();
+            Vector3 v = w.Cross(u);
 
-            origin = new Vector3(0, 0, 0);
-            horizontal = new Vector3(viewportWidth, 0.0, 0.0);
-            vertical = new Vector3(0.0, viewportHeight, 0.0);
-            lowerLeftCorner = origin - horizontal / 2 - vertical / 2 - new Vector3(0, 0, focalLength);
+            origin = lookFrom;
+            horizontal = viewportWidth * u;
+            vertical = viewportHeight * v;
+            lowerLeftCorner = origin - horizontal / 2 - vertical / 2 - w;
         }
 
-        public Ray GetRay(double u, double v)
+        public Ray GetRay(double s, double t)
         {
-            return new Ray(origin, lowerLeftCorner + u * horizontal + v * vertical - origin);
+            return new Ray(origin, lowerLeftCorner + s * horizontal + t * vertical - origin);
         }
     }
 }
