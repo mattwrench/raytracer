@@ -19,9 +19,18 @@ namespace RayTracer
             double refractionRatio = record.FrontFace ? (1.0 / RefractionIndex) : RefractionIndex;
 
             Vector3 unitDirection = rIn.Direction.Normalize();
-            Vector3 refracted = Vector3.Refract(unitDirection, record.Normal, refractionRatio);
+            double cosTheta = Math.Min(record.Normal.Dot(-unitDirection), 1.0);
+            double sinTheta = Math.Sqrt(1.0 - cosTheta * cosTheta);
 
-            scattered.Set(new Ray(record.Point, refracted));
+            bool cannotRefract = refractionRatio * sinTheta > 1.0;
+            Vector3 direction;
+
+            if (cannotRefract)
+                direction = Vector3.Reflect(unitDirection, record.Normal);
+            else
+                direction = Vector3.Refract(unitDirection, record.Normal, refractionRatio);
+
+            scattered.Set(new Ray(record.Point, direction));
             return true;
         }
     }

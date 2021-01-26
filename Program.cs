@@ -65,9 +65,9 @@ namespace RayTracer
             HittableList world = new HittableList();
 
             Lambertian materialGround = new Lambertian(new Vector3(0.8, 0.8, 0.0));
-            Dielectric materialCenter = new Dielectric(1.5);
+            Lambertian materialCenter = new Lambertian(new Vector3(0.1, 0.2, 0.5));
             Dielectric materialLeft = new Dielectric(1.5);
-            Metal materialRight = new Metal(new Vector3(0.8, 0.6, 0.2), 1.0);
+            Metal materialRight = new Metal(new Vector3(0.8, 0.6, 0.2), 0.0);
 
             world.Add(new Sphere(new Vector3(0.0, -100.5, -1.0), 100.0, materialGround));
             world.Add(new Sphere(new Vector3(0.0, 0.0, -1.0), 0.5, materialCenter));
