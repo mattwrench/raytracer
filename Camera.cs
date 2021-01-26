@@ -10,11 +10,13 @@ namespace RayTracer
         private Vector3 lowerLeftCorner;
         private Vector3 horizontal, vertical;
 
-        public Camera()
+        public Camera(double vFOV, double aspectRatio)
         {
-            double aspectRatio = 16.0 / 9.0;
-            double viewportHeight = 2.0;
+            double theta = Utilities.DegreesToRadians(vFOV);
+            double h = Math.Tan(theta / 2);
+            double viewportHeight = 2.0 * h;
             double viewportWidth = aspectRatio * viewportHeight;
+
             double focalLength = 1.0;
 
             origin = new Vector3(0, 0, 0);

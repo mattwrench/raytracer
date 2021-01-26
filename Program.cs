@@ -62,21 +62,17 @@ namespace RayTracer
             const int maxDepth = 50;
 
             // World
+            double R = Math.Cos(Math.PI / 4);
             HittableList world = new HittableList();
 
-            Lambertian materialGround = new Lambertian(new Vector3(0.8, 0.8, 0.0));
-            Lambertian materialCenter = new Lambertian(new Vector3(0.1, 0.2, 0.5));
-            Dielectric materialLeft = new Dielectric(1.5);
-            Metal materialRight = new Metal(new Vector3(0.8, 0.6, 0.2), 0.0);
+            Lambertian materialLeft = new Lambertian(new Vector3(0, 0, 1));
+            Lambertian materialRight = new Lambertian(new Vector3(1, 0, 0));
 
-            world.Add(new Sphere(new Vector3(0.0, -100.5, -1.0), 100.0, materialGround));
-            world.Add(new Sphere(new Vector3(0.0, 0.0, -1.0), 0.5, materialCenter));
-            world.Add(new Sphere(new Vector3(-1.0, 0.0, -1.0), 0.5, materialLeft));
-            world.Add(new Sphere(new Vector3(-1.0, 0.0, -1.0), -0.4, materialLeft));
-            world.Add(new Sphere(new Vector3(1.0, 0.0, -1.0), 0.5, materialRight));
+            world.Add(new Sphere(new Vector3(-R, 0, -1), R, materialLeft));
+            world.Add(new Sphere(new Vector3(R, 0, -1), R, materialRight));
 
             // Camera
-            Camera cam = new Camera();
+            Camera cam = new Camera(90.0, aspectRatio);
 
             // Output .ppm header
             StreamWriter writer = new StreamWriter(Filename, false, System.Text.Encoding.ASCII);
