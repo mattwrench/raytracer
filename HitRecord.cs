@@ -10,6 +10,7 @@ namespace RayTracer
         public Vector3 Normal;
         public double T;
         public bool FrontFace;
+        public Material Material;
 
         public void SetFaceNormal(Ray r, Vector3 outwardNormal)
         {
@@ -24,6 +25,7 @@ namespace RayTracer
             Normal = r.Normal;
             T = r.T;
             FrontFace = r.FrontFace;
+            Material = r.Material;
         }
     }
 }

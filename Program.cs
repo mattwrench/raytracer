@@ -22,8 +22,11 @@ namespace RayTracer
             // 0.001 minimum prevents shadow acne
             if (world.Hit(r, 0.001, Double.MaxValue, record))
             {
-                Vector3 target = record.Point + record.Normal + Vector3.RandomUnitVector(rand);
-                return 0.5 * rayColor(new Ray(record.Point, target - record.Point), world, depth - 1);
+                Ray scattered = new Ray();
+                Vector3 attenuation = new Vector3();
+                if (record.Material.Scatter(r, record, attenuation, scattered, rand))
+                    return attenuation * rayColor(scattered, world, depth - 1);
+                return new Vector3(0, 0, 0); // Return black
             }
 
             // Render a blue-to-white gradient background if no hit
@@ -60,8 +63,16 @@ namespace RayTracer
 
             // World
             HittableList world = new HittableList();
-            world.Add(new Sphere(new Vector3(0, 0, -1), 0.5));
-            world.Add(new Sphere(new Vector3(0, -100.5, -1), 100));
+
+            Lambertian materialGround = new Lambertian(new Vector3(0.8, 0.8, 0.0));
+            Lambertian materialCenter = new Lambertian(new Vector3(0.7, 0.3, 0.3));
+            Metal materialLeft = new Metal(new Vector3(0.8, 0.8, 0.8));
+            Metal materialRight = new Metal(new Vector3(0.8, 0.6, 0.2));
+
+            world.Add(new Sphere(new Vector3(0.0, -100.5, -1.0), 100.0, materialGround));
+            world.Add(new Sphere(new Vector3(0.0, 0.0, -1.0), 0.5, materialCenter));
+            world.Add(new Sphere(new Vector3(-1.0, 0.0, -1.0), 0.5, materialLeft));
+            world.Add(new Sphere(new Vector3(1.0, 0.0, -1.0), 0.5, materialRight));
 
             // Camera
             Camera cam = new Camera();
@@ -87,6 +98,8 @@ namespace RayTracer
                         Ray r = cam.GetRay(u, v);
                         pixelColor = pixelColor + rayColor(r, world, maxDepth);
                     }
+                    if (pixelColor.X == 0 && pixelColor.Y == 0 && pixelColor.Z == 0)
+                        ;
                     writer.WriteLine(pixelColor.WriteColor(pixelColor, samplesPerPixel));
                 }
             }

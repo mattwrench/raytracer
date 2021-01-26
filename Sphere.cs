@@ -8,6 +8,7 @@ namespace RayTracer
     {
         public Vector3 Center;
         public double Radius;
+        public Material Material;
 
         public Sphere()
         {
@@ -15,10 +16,11 @@ namespace RayTracer
             Radius = 0;
         }
 
-        public Sphere(Vector3 center, double radius)
+        public Sphere(Vector3 center, double radius, Material material)
         {
             Center = center;
             Radius = radius;
+            Material = material;
         }
 
         public bool Hit(Ray r, double tMin, double tMax, HitRecord record)
@@ -47,6 +49,7 @@ namespace RayTracer
             record.Normal = (record.Point - Center) / Radius;
             Vector3 outwardNormal = (record.Point - Center) / Radius;
             record.SetFaceNormal(r, outwardNormal);
+            record.Material = Material;
 
             return true;
         }

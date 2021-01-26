@@ -25,5 +25,12 @@ namespace RayTracer
         {
             return Origin.Add(Direction.Multiply(t));
         }
+
+        public Ray Set(Ray r)
+        {
+            Origin.Set(r.Origin);
+            Direction.Set(r.Direction);
+            return this; // Returns ray for further chaining
+        }
     }
 }

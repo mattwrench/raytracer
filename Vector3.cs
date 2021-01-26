@@ -31,6 +31,10 @@ namespace RayTracer
             {
                 return Components[0];
             }
+            set
+            {
+                Components[0] = value;
+            }
         }
 
         public double Y
@@ -38,6 +42,10 @@ namespace RayTracer
             get
             {
                 return Components[1];
+            }
+            set
+            {
+                Components[1] = value;
             }
         }
 
@@ -47,8 +55,19 @@ namespace RayTracer
             {
                 return Components[2];
             }
+            set
+            {
+                Components[2] = value;
+            }
         }
 
+        public Vector3 Set(Vector3 v)
+        {
+            Components[0] = v.X;
+            Components[1] = v.Y;
+            Components[2] = v.Z;
+            return this; // Returns updated vector for further chaining
+        }
         public Vector3 Add(Vector3 v)
         {
             return new Vector3(X + v.X, Y + v.Y, Z + v.Z);
@@ -138,6 +157,15 @@ namespace RayTracer
             return String.Concat(r, ' ', g, ' ', b);
         }
 
+        public bool NearZero()
+        {
+            // Returns true if vector is close to 0 in all directions
+            double s = 1e-8;
+            return (Math.Abs(Components[0]) < s) &&
+                (Math.Abs(Components[1]) < s) &&
+                (Math.Abs(Components[2]) < s);
+        }
+
         // Static functions
         public static Vector3 RandomVector(Random rand)
         {
@@ -165,6 +193,11 @@ namespace RayTracer
         public static Vector3 RandomUnitVector(Random rand)
         {
             return RandomInUnitSphere(rand).Normalize();
+        }
+
+        public static Vector3 Reflect(Vector3 v, Vector3 n)
+        {
+            return v - 2 * v.Dot(n) * n;
         }
 
         // Operator overloads
