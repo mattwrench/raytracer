@@ -200,6 +200,14 @@ namespace RayTracer
             return v - 2 * v.Dot(n) * n;
         }
 
+        public static Vector3 Refract(Vector3 uv, Vector3 n, double etaiOverEtat)
+        {
+            double cosTheta = Math.Min(n.Dot(-uv), 1.0);
+            Vector3 rOutPerp = etaiOverEtat * (uv + cosTheta * n);
+            Vector3 rOutParallel = -Math.Sqrt(Math.Abs(1.0 - rOutPerp.LengthSquared())) * n;
+            return rOutPerp + rOutParallel;
+        }
+
         // Operator overloads
         public static Vector3 operator +(Vector3 a, Vector3 b)
         {
