@@ -195,6 +195,16 @@ namespace RayTracer
             return RandomInUnitSphere(rand).Normalize();
         }
 
+        public static Vector3 RandomInUnitDisk(Random rand)
+        {
+            while (true)
+            {
+                Vector3 p = new Vector3(Utilities.RandomDouble(rand, -1, 1), Utilities.RandomDouble(rand, -1, 1), 0);
+                if (p.LengthSquared() >= 1)
+                    return p;
+            }
+        }
+
         public static Vector3 Reflect(Vector3 v, Vector3 n)
         {
             return v - 2 * v.Dot(n) * n;

@@ -9,27 +9,42 @@ namespace RayTracer
         private Vector3 origin;
         private Vector3 lowerLeftCorner;
         private Vector3 horizontal, vertical;
+        private Vector3 u, v, w;
+        private double lensRadius;
 
-        public Camera(Vector3 lookFrom, Vector3 lookAt, Vector3 vUp, double vFOV, double aspectRatio)
+        public Camera(
+            Vector3 lookFrom, 
+            Vector3 lookAt, 
+            Vector3 vUp, 
+            double vFOV, 
+            double aspectRatio,
+            double aperture,
+            double focusDist)
         {
             double theta = Utilities.DegreesToRadians(vFOV);
             double h = Math.Tan(theta / 2);
             double viewportHeight = 2.0 * h;
             double viewportWidth = aspectRatio * viewportHeight;
 
-            Vector3 w = (lookFrom - lookAt).Normalize();
-            Vector3 u = vUp.Cross(w).Normalize();
-            Vector3 v = w.Cross(u);
+            w = (lookFrom - lookAt).Normalize();
+            u = vUp.Cross(w).Normalize();
+            v = w.Cross(u);
 
             origin = lookFrom;
-            horizontal = viewportWidth * u;
-            vertical = viewportHeight * v;
-            lowerLeftCorner = origin - horizontal / 2 - vertical / 2 - w;
+            horizontal = focusDist * viewportWidth * u;
+            vertical = focusDist * viewportHeight * v;
+            lowerLeftCorner = origin - horizontal / 2 - vertical / 2 - focusDist * w;
+
+            lensRadius = aperture / 2;
         }
 
-        public Ray GetRay(double s, double t)
+        public Ray GetRay(double s, double t, Random rand)
         {
-            return new Ray(origin, lowerLeftCorner + s * horizontal + t * vertical - origin);
+            Vector3 rd = lensRadius * Vector3.RandomInUnitDisk(rand);
+            Vector3 offset = u * rd.X + v * rd.Y;
+
+            return new Ray(origin + offset, 
+                lowerLeftCorner + s * horizontal + t * vertical - origin - offset);
         }
     }
 }

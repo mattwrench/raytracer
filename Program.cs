@@ -77,7 +77,13 @@ namespace RayTracer
             world.Add(new Sphere(new Vector3(1.0, 0.0, -1.0), 0.5, materialRight));
 
             // Camera
-            Camera cam = new Camera(new Vector3(-2, 2, 1), new Vector3(0, 0, -1), new Vector3(0, 1, 0), 20, aspectRatio);
+            Vector3 lookFrom = new Vector3(3, 3, 2);
+            Vector3 lookAt = new Vector3(0, 0, -1);
+            Vector3 vUp = new Vector3(0, 1, 0);
+            double distToFocus = (lookFrom - lookAt).Length();
+            double aperture = 2.0;
+
+            Camera cam = new Camera(lookFrom, lookAt, vUp, 20, aspectRatio, aperture, distToFocus);
 
             // Output .ppm header
             StreamWriter writer = new StreamWriter(Filename, false, System.Text.Encoding.ASCII);
@@ -97,7 +103,7 @@ namespace RayTracer
                         // Generate randomized rays from camera viewport
                         double u = (i + rand.NextDouble()) / (imageWidth - 1);
                         double v = (j + rand.NextDouble()) / (imageHeight - 1);
-                        Ray r = cam.GetRay(u, v);
+                        Ray r = cam.GetRay(u, v, rand);
                         pixelColor = pixelColor + rayColor(r, world, maxDepth);
                     }
                     if (pixelColor.X == 0 && pixelColor.Y == 0 && pixelColor.Z == 0)

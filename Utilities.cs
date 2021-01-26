@@ -19,5 +19,11 @@ namespace RayTracer
         {
             return degrees / 180 * Math.PI;
         }
+
+        // Returns double between min and max
+        public static double RandomDouble(Random rand, double min, double max)
+        {
+            return min + (max - min) * rand.NextDouble();
+        }
     }
 }
